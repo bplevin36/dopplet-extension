@@ -1,0 +1,27 @@
+{
+	"manifest_version": 2,
+	"name": "Dopplet",
+	"description": "This extensions aims to support Java applets in Javascript",
+	
+	"version": "0.1",
+	
+	"icons": {
+		"128": "images/coffee64.png"
+	},
+
+	"page_action": {
+		"default_icon": "images/coffee64.png",
+		"default_title": "Dopplet"
+	},
+	"permissions": [
+		"activeTab",
+		"declarativeContent"
+	],
+	"background": {
+		"scripts": ["src/background.js"],
+		"persistent": false
+	},
+	"web_accessible_resources" : [
+		"res/*"
+	]
+}
