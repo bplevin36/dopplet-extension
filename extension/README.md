@@ -1,3 +1,3 @@
 # dopplet-extension
-An extension to attempt to execute applets using Javascript
+The extension portion of dopplet
 ===========================================================
