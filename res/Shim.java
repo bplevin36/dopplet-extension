@@ -1,10 +1,11 @@
-package sun.applet;
 
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
 import sun.applet.AppletViewerPanel;
 import java.lang.reflect.Method;
+import java.awt.Color;
+
 
 
 public class Shim {
@@ -19,19 +20,16 @@ public class Shim {
 		}catch(MalformedURLException e){
 			e.printStackTrace();
 		}
-		AppletViewerPanel appletPanel = new AppletViewerPanel(doc, attributes);
+		//AppletViewerPanel appletPanel = new AppletViewerPanel(doc, attributes);
 		System.out.println("Current URL: "+doc.toString() );
-		appletPanel.init();
-		try{
-			Class<?> browserClass = Class.forName("browser");
-			Method mainMethod = browserClass.getMethod("main", String[].class);
-			Object[] arguments = new Object[1];
-			arguments[0] = new String("dynamicArg");
-			mainMethod.invoke(null, arguments);
+		//appletPanel.init();
 
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		CanvasGraphics g = new CanvasGraphics("appletReplacement");
+		g.fillRect(100, 100, 100, 100);
+
+		g.setColor(Color.GREEN);
+		g.fillRect(50, 50, 25, 25);
+		System.out.println(g.getColor().toString());
 
 	}
 }

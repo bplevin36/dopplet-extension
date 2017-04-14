@@ -1,3 +1,4 @@
+
 function initString(cl, str) {
   var carr = initCarr(cl, str);
   var strCons = (cl.getResolvedClass('Ljava/lang/String;')).getConstructor(null);
@@ -18,7 +19,7 @@ function initCarr(cl, str) {
 }
 // This entire object is exported. Feel free to define private helper functions above it.
 registerNatives({
-  'sun/applet/Shim': {
+  'Shim': {
 
     'getDocumentURL()Ljava/lang/String;': function(thread) {
     	return initString(thread.getBsCl(), document.URL);

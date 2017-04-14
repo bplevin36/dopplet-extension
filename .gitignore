@@ -4,3 +4,4 @@ res/browserfs.js.map
 res/doppio.js
 res/doppio.js.map
 vendor
+*.class

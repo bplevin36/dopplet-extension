@@ -70,7 +70,7 @@ browserfsjs.onload = function(){
 		}, function(err, jvm){
 			jvm.runClass('Shim', ['arg1'], function(exitCode){
 				if(exitCode == 0){
-					console.log("succesful jvm termination");
+					console.log("jvm terminated");
 				} else {
 					console.log("error in jvm");
 				}
@@ -107,5 +107,5 @@ document.head.appendChild(browserfsjs);
 
 
 // test square draw
-let ctx = canvas.getContext("2d");
-ctx.fillRect(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
+//let ctx = canvas.getContext("2d");
+//ctx.fillRect(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
