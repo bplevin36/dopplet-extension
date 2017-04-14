@@ -65,14 +65,14 @@ browserfsjs.onload = function(){
 		startJVM.innerHTML = String.raw`
 		new Doppio.VM.JVM({
 			doppioHomePath: '/sys',
-
-			classpath: ['/page']
+			nativeClasspath: ['/sys/natives'],
+			classpath: ['/page', '/sys']
 		}, function(err, jvm){
-			jvm.runClass('${canvas.getAttribute('data-code')}', ['arg1'], function(exitCode){
+			jvm.runClass('Shim', ['arg1'], function(exitCode){
 				if(exitCode == 0){
 					console.log("succesful jvm termination");
 				} else {
-					console.log("error during jvm execution");
+					console.log("error in jvm");
 				}
 			});
 		});
@@ -88,6 +88,16 @@ browserfsjs.onload = function(){
         		stdoutBuff = stdoutBuff.slice(newlineIdx+1);
       		}
     	});
+
+    	var stderrBuffer = '';
+          process.stderr.on('data', function(data) {
+            stderrBuffer += data.toString();
+            var newlineIdx;
+            while ((newlineIdx = stderrBuffer.indexOf("\n")) > -1) {
+              console.log("err: "+stderrBuffer.slice(0, newlineIdx + 1));
+              stderrBuffer = stderrBuffer.slice(newlineIdx + 1);
+            }
+          });
 		`;
 		document.head.appendChild(startJVM);
 	};
