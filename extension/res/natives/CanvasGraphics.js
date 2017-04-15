@@ -23,6 +23,15 @@ function pathFromString(javaString){
   return new Path2D(svgStr);
 }
 
+function getClass(thread, className, cb){
+  let newClass = thread.getBsCl().getResolvedClass(className);
+  if(!newClass){
+    thread.getBsCl().initializeClass(thread, className, function(){cb(thread.getBsCl().getClass(className));});
+  }else{
+    cb(newClass);
+  }
+}
+
 // This entire object is exported. Feel free to define private helper functions above it.
 registerNatives({
   'CanvasGraphics': {
@@ -47,6 +56,10 @@ registerNatives({
       */
     },
 
+    'drawImage(Ljava/awt/Image;IILjava/awt/image/ImageObserver;)Z': function(thread, javaThis, arg0, arg1, arg2, arg3) {
+      let raster = arg0["java/awt/BufferedImage/raster"];
+    },
+
     'drawLine(IIII)V': function(thread, javaThis, arg0, arg1, arg2, arg3) {
       let ctx = getContext(thread, javaThis);
       if(ctx){
@@ -58,7 +71,14 @@ registerNatives({
     },
 
     'drawOval(IIII)V': function(thread, javaThis, arg0, arg1, arg2, arg3) {
-      thread.throwNewException('Ljava/lang/UnsatisfiedLinkError;', 'Native method not implemented.');
+      let ctx = getContext(thread, javaThis);
+      if(ctx){
+        let radiusX = arg2/2;
+        let radiusY = arg3/2;
+        ctx.beginPath();
+        ctx.ellipse(arg0 + radiusX, arg1 + radiusY, radiusX, radiusY, 0, 0, Math.PI*2);
+        ctx.stroke();
+      }
     },
 
     'drawPolygon0(Ljava/lang/String;)V': function(thread, javaThis, arg0) {
@@ -75,8 +95,9 @@ registerNatives({
         ctx.beginPath();
         ctx.moveTo(arg0['array'][0], arg1['array'][0]);
         for(let ct = 1; ct < arg2; ct++){
-
+          ctx.lineTo(arg0['array'][ct], arg1['array'][ct]);
         }
+        ctx.stroke();
       }
     },
 
@@ -109,7 +130,14 @@ registerNatives({
     },
 
     'fillOval(IIII)V': function(thread, javaThis, arg0, arg1, arg2, arg3) {
-      thread.throwNewException('Ljava/lang/UnsatisfiedLinkError;', 'Native method not implemented.');
+      let ctx = getContext(thread, javaThis);
+      if(ctx){
+        let radiusX = arg2/2;
+        let radiusY = arg3/2;
+        ctx.beginPath();
+        ctx.ellipse(arg0 + radiusX, arg1 + radiusY, radiusX, radiusY, 0, 0, Math.PI*2);
+        ctx.fill();
+      }
     },
 
     'fillPolygon0(Ljava/lang/String;)V': function(thread, javaThis, arg0) {
@@ -188,10 +216,14 @@ registerNatives({
           thread.throwNewException('Ljava/lang/IllegalStateException;', 'DOM color unparseable');
         }
 
-        var colorCons = (thread.getBsCl().getResolvedClass('Ljava/awt/Color;')).getConstructor(null);
-        var colorObj = new colorCons(null);
-        colorObj['java/awt/Color/value'] = cval;
-        return colorObj;
+        thread.setStatus(6);
+        getClass(thread, "Ljava/awt/Color;", function(data){
+          var colorCons = data.getConstructor(null);
+          var colorObj = new colorCons(null);
+          colorObj['java/awt/Color/value'] = cval;
+          thread.asyncReturn(colorObj);
+        });
+        
       }
     },
 
@@ -208,4 +240,4 @@ registerNatives({
   }
 });
 
-//# sourceURL=chrome-extension://mdfmmbhnifgbkgpibjdeljpbmmffgkca/res/natives/CanvasGraphics.js
+//# sourceURL=chrome-extension://haecjomoehmjbllenidmmohecalbajbe/res/natives/CanvasGraphics.js
