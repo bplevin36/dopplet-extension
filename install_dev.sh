@@ -1,5 +1,5 @@
 cd BrowserFS
-npm install -g browserfs
+sudo npm install -g browserfs
 npm install
 cd ../doppio
 npm install -f
