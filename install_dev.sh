@@ -4,6 +4,7 @@ npm install
 cd ../doppio
 npm install -f
 cd ../extension/res
+javac *.java
 ln -s ../../doppio/dist/fast-dev/doppio.js .
 ln -s ../../doppio/dist/fast-dev/doppio.js.map .
 ln -s ../../BrowserFS/dist/browserfs.js .
