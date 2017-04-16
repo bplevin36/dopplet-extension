@@ -111,9 +111,7 @@ public class CanvasGraphics extends Graphics {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public boolean drawImage(Image img, int x, int y, ImageObserver observer){
-		throw new UnsupportedOperationException();
-	}
+	public native boolean drawImage(Image img, int x, int y, ImageObserver observer);
 	@Override
 	public boolean drawImage(Image img, int x, int y, int width, int height,
 		Color bgcolor, ImageObserver observer){

@@ -1,12 +1,10 @@
 function getStringField(obj, field){
   let fieldStr = "CanvasGraphics/"+field;
-  return String.fromCharCode.apply(this, 
-    obj[fieldStr]["java/lang/String/value"]["array"]);
+  return obj[fieldStr].toString();
 }
 
 function getCanvasId(obj){
-return String.fromCharCode.apply(this, 
-    obj["CanvasGraphics/canvasId"]["java/lang/String/value"]["array"]);
+return obj["CanvasGraphics/canvasId"].toString();
 }
 
 function getContext(thread, obj){
@@ -16,11 +14,6 @@ function getContext(thread, obj){
   }else{
     thread.throwNewException('Ljava/lang/IllegalStateException;', 'No canvas context');
   }
-}
-
-function pathFromString(javaString){
-  let svgStr = String.fromCharCode.apply(this,javaString["java/lang/String/value"]["array"]);
-  return new Path2D(svgStr);
 }
 
 function getClass(thread, className, cb){
@@ -35,7 +28,6 @@ function getClass(thread, className, cb){
 // This entire object is exported. Feel free to define private helper functions above it.
 registerNatives({
   'CanvasGraphics': {
-
     'clearRect(IIII)V': function(thread, javaThis, arg0, arg1, arg2, arg3) {
       let ctx = getContext(thread, javaThis);
       if(ctx){
@@ -84,7 +76,7 @@ registerNatives({
     'drawPolygon0(Ljava/lang/String;)V': function(thread, javaThis, arg0) {
       let ctx = getContext(thread, javaThis);
       if(ctx){
-        let path = pathFromString(arg0);
+        let path = new Path2D(arg0.toString());
         ctx.stroke(path);
       }
     },
@@ -143,7 +135,7 @@ registerNatives({
     'fillPolygon0(Ljava/lang/String;)V': function(thread, javaThis, arg0) {
       let ctx = getContext(thread, javaThis);
       if(ctx){
-        let path = pathFromString(arg0);
+        let path = new Path2D(arg0.toString());
         ctx.fill(path);
       }
     },
@@ -181,7 +173,7 @@ registerNatives({
     'setClip0(Ljava/lang/String;)V': function(thread, javaThis, arg0) {
       let ctx = getContext(thread, javaThis);
       if(ctx){
-        let newClip = pathFromString(arg0);
+        let newClip = new Path2D(arg0.toString());
         ctx.clip(newClip);
         window.drawingClips[getCanvasId(javaThis)] = newClip;
       }

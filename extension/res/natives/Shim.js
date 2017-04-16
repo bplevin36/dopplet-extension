@@ -20,9 +20,23 @@ function initCarr(cl, str) {
 // This entire object is exported. Feel free to define private helper functions above it.
 registerNatives({
   'Shim': {
+    'appletResize(II)V': function(thread, javaThis, width, height){
 
-    'getDocumentURL()Ljava/lang/String;': function(thread) {
+    },
+    'getCodeBase0()Ljava/lang/String;': function(thread, javaThis){
+
+    },
+    'getDocumentBase0()Ljava/lang/String;': function(thread, javaThis) {
     	return initString(thread.getBsCl(), document.URL);
+    },
+    'getParameter(Ljava/lang/String;)Ljava/lang/String;': function(thread, javaThis, name){
+      let canvasId = javaThis['Shim/canvasId'].toString();
+      let param = document.getElementById(canvasId).getAttribute(name.toString());
+      if(param)
+        return initString(thread.getBsCl(), param);
+      return null;
     }
   }
 });
+
+//# sourceURL=chrome-extension://haecjomoehmjbllenidmmohecalbajbe/res/natives/Shim.js

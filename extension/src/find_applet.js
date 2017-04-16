@@ -3,27 +3,39 @@ console.log("Finding applets...");
 var elements = document.getElementsByTagName("applet");
 var applets = [];
 for(var i=0; i<elements.length; i++){
-	applets.push(elements[i].attributes['code'].nodeValue);
+	applets.push(elements[i].getAttribute('code'));
 }
 var port = chrome.runtime.connect({name: "applets"});
 port.postMessage(applets);
 
-let toReplace = elements[0];
-let javaCode = applets[0];
+let toReplace = elements[0]
+let javaCode = elements[0].getAttribute('code');
+let javaName = elements[0].getAttribute('name');
+let javaHeight = elements[0].getAttribute('height');
+let javaWidth = elements[0].getAttribute('width');
 let canvas = document.createElement('canvas');
 canvas.setAttribute('data-code', javaCode.endsWith('.class')?javaCode.slice(0,-6):javaCode);
 canvas.id = 'appletReplacement';
 canvas.style = "border:1px solid #000000;";
-if (toReplace.attributes['height']){
-	canvas.height = toReplace.attributes['height'].value;
-}
-if (toReplace.attributes['width']){
-	canvas.width = toReplace.attributes['width'].value;
-}
+canvas.tabindex = "1";
+if(javaName)
+  canvas.name = javaName;
+if (javaHeight)
+	canvas.height = javaHeight;
+if (javaWidth)
+	canvas.width = javaWidth;
+// create status box
+let statusBox = document.createElement('section');
+statusBox.style = "border: 1px solid lightgrey; margin-bottom: 10px";
+statusBox.innerHTML = `
+<h4 style="margin: 5px 5px;">Status:</h4>
+<p class="appletStatus" style="margin: 5px 15px 15px; color: grey; font: 15px arial, sans-serif;">None so far...</p>
+`
 //swap in canvas and fill with test
 // TODO scrape out params element under applet
 let parent = toReplace.parentNode;
 parent.replaceChild(canvas, toReplace);
+parent.insertBefore(statusBox, canvas);
 
 // add browserfs
 let browserfsjs = document.createElement('script');
