@@ -12,5 +12,12 @@ ln -s ../../BrowserFS/dist/browserfs.js.map .
 mkdir vendor
 cd vendor
 ln -s ../../../doppio/vendor/java_home .
-cd ..
+
+# fix accessibility properties
+cd java_home/lib
+newacc=$(awk '/^#/{print}' accessibility.properties)
+echo "$newacc" > accessibility.properties
+printf "\n\n" >> accessibility.properties
+
+cd ../../..
 make_xhrfs_index listings.json

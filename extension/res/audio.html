@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Audio Decode</title>
+    <meta http-equiv="Content-Type" content="text/html">
+  </head>
+  <body>
+    <h1>Audio Decode</h1>
+    <audio controls="yes" style="margin:40px"></audio>
+    <script>
+let req = new XMLHttpRequest();
+let buffer;
+req.responseType = "arraybuffer";
+req.onreadystatechange = function(){
+  if(req.readyState == 4){
+    buffer = req.response;
+    let view = new DataView(buffer);
+    let magic = view.getUint32(0).toString(16);
+    if(magic === "2e736e64"){
+      decodeAU(view);
+    }
+  }
+}
+req.open('GET', 'newpickup.au');
+req.send();
+function decodeAU(view){
+  let dataOffset = view.getUint32(4);
+  let dataSize = view.getUint32(8);
+  let encoding = view.getUint32(12);
+  let sampleRate = view.getUint32(16);
+  let channels = view.getUint32(20);
+  console.assert(channels === 1);
+
+  let audioCtx = new AudioContext();
+  let destBuffer = audioCtx.createBuffer(channels, dataSize*2, sampleRate*2);
+  let channelBuff = destBuffer.getChannelData(0);
+  if(encoding === 1){
+    for(let i=dataOffset; i < dataOffset+dataSize; i++){
+      let sample = ulaw2lin(view.getUint8(i));
+      let nextSample;
+      if(i+1 < dataOffset+dataSize){
+        nextSample = ulaw2lin(view.getUint8(i+1));
+        channelBuff[i*2+1] = (sample+nextSample)/2;
+      }
+      channelBuff[i*2] = sample;
+    }
+    let source = audioCtx.createBufferSource();
+    source.buffer = destBuffer;
+    source.connect(audioCtx.destination);
+    source.start();
+  }
+}
+
+function ulaw2lin(byte){
+  let sign = 0;
+  byte = ~byte;
+  if(byte & 0x80){
+    byte = byte & ~(1 << 7);
+    sign = -1;
+  }
+  let position = ((byte & 0xF0) >> 4) + 5;
+  let decoded = ((1 << position) | ((byte & 0x0F) << (position - 4)) | (1 << (position-5))) - 33;
+  return (sign == 0) ? (decoded) : (-(decoded));
+}
+
+
+    </script>
+  </body>
+</html>

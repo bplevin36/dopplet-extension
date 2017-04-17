@@ -23,17 +23,23 @@ registerNatives({
     'appletResize(II)V': function(thread, javaThis, width, height){
 
     },
-    'getCodeBase0()Ljava/lang/String;': function(thread, javaThis){
-
-    },
     'getDocumentBase0()Ljava/lang/String;': function(thread, javaThis) {
     	return initString(thread.getBsCl(), document.URL);
     },
-    'getParameter(Ljava/lang/String;)Ljava/lang/String;': function(thread, javaThis, name){
-      let canvasId = javaThis['Shim/canvasId'].toString();
-      let param = document.getElementById(canvasId).getAttribute(name.toString());
+    'getParameter(Ljava/lang/String;)Ljava/lang/String;': function(thread, javaThis, paramName){
+      let canvas = document.getElementById(javaThis['Shim/canvasId'].toString());
+      let param = canvas.getAttribute(paramName.toString());
       if(param)
         return initString(thread.getBsCl(), param);
+      let params = canvas.getElementsByTagName('param');
+      for(let i=0; i<params.length; i++){
+        let name = params[i].getAttribute('name');
+        if(name && name === paramName.toString()){
+          let val = params[i].getAttribute('value');
+          if(val)
+            return initString(thread.getBsCl(), val);
+        }
+      }
       return null;
     }
   }

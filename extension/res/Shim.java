@@ -5,9 +5,10 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.GraphicsEnvironment;
+import java.awt.Panel;
 
 
-public class Shim implements Runnable, AppletStub{
+public class Shim extends Panel implements Runnable, AppletStub {
 
 	String canvasId;
 	Applet applet;
@@ -15,6 +16,7 @@ public class Shim implements Runnable, AppletStub{
 	URL documentBase;
 
 	public static void main(String[] args) {
+		//TODO programatically set canvasId param
 		Shim myShim = new Shim("appletReplacement");
 		new Thread(myShim).start();
 	}
@@ -42,7 +44,9 @@ public class Shim implements Runnable, AppletStub{
 		System.out.println("Document: " + getDocumentBase());
 		System.out.println("Codebase: "+ getCodeBase());
 		System.out.println("Code: "+ getParameter("data-code"));
-		System.out.println("Headless? "+System.getProperty("java.awt.headless"));
+		System.out.println("D? "+getParameter("d"));
+		System.out.println("Headless? "+GraphicsEnvironment.isHeadless());
+		System.out.println("AT? "+System.getProperty("javax.accessibility.assistive_technologies"));
 
 		ClassLoader cl = this.getClass().getClassLoader();
 		Class<? extends Applet> codeClass=null;
@@ -57,25 +61,36 @@ public class Shim implements Runnable, AppletStub{
 		}
 		try{
 			applet = codeClass.newInstance();
-			applet.init();
+			if(applet != null){
+				applet.setStub(this);
+				applet.setVisible(false);
+				add("Center", applet);
+
+				
+				applet.init();
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-
+	@Override
 	public native void appletResize(int width, int height);
+	@Override
 	public AppletContext getAppletContext(){
 		throw new UnsupportedOperationException();
 	}
-
+	@Override
 	public URL getCodeBase(){
 		return codeBase;
 	}
 	public native String getDocumentBase0();
+	@Override
 	public URL getDocumentBase(){
 		return documentBase;
 	}
+	@Override
 	public native String getParameter(String name);
+	@Override
 	public boolean isActive(){
 		return false;
 	}

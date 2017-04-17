@@ -55,24 +55,28 @@ export default function (): any {
   class java_lang_Class {
 
     public static 'forName0(Ljava/lang/String;ZLjava/lang/ClassLoader;Ljava/lang/Class;)Ljava/lang/Class;'(thread: JVMThread, jvmStr: JVMTypes.java_lang_String, initialize: number, jclo: JVMTypes.java_lang_ClassLoader, caller: JVMTypes.java_lang_Class): void {
-      var classname = util.int_classname(jvmStr.toString());
-      if (!util.verify_int_classname(classname)) {
-        thread.throwNewException('Ljava/lang/ClassNotFoundException;', classname);
-      } else {
-        var loader = util.getLoader(thread, jclo);
-        thread.setStatus(ThreadStatus.ASYNC_WAITING);
-        if (initialize) {
-          loader.initializeClass(thread, classname, (cls: ReferenceClassData<JVMTypes.java_lang_Object>) => {
-            if (cls != null) {
-              thread.asyncReturn(cls.getClassObject(thread));
-            }
-          });
+      if(!jvmStr){
+        thread.throwNewException('Ljava/lang/ClassNotFoundException;', "");
+      }else{
+        var classname = util.int_classname(jvmStr.toString());
+        if (!util.verify_int_classname(classname)) {
+          thread.throwNewException('Ljava/lang/ClassNotFoundException;', classname);
         } else {
-          loader.resolveClass(thread, classname, (cls: ReferenceClassData<JVMTypes.java_lang_Object>) => {
-            if (cls != null) {
-              thread.asyncReturn(cls.getClassObject(thread));
-            }
-          });
+          var loader = util.getLoader(thread, jclo);
+          thread.setStatus(ThreadStatus.ASYNC_WAITING);
+          if (initialize) {
+            loader.initializeClass(thread, classname, (cls: ReferenceClassData<JVMTypes.java_lang_Object>) => {
+              if (cls != null) {
+                thread.asyncReturn(cls.getClassObject(thread));
+              }
+            });
+          } else {
+            loader.resolveClass(thread, classname, (cls: ReferenceClassData<JVMTypes.java_lang_Object>) => {
+              if (cls != null) {
+                thread.asyncReturn(cls.getClassObject(thread));
+              }
+            });
+          }
         }
       }
     }

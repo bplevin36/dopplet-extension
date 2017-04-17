@@ -13,12 +13,24 @@ import java.util.Iterator;
 
 public class CanvasAppletContext implements AppletContext {
 
+	private static Vector<Applet> applets = null;
+
+	private Applet myApplet;
+
+	public CanvasAppletContext(Applet app){
+		if(applets == null){
+			applets = new Vector<Applet>();
+		}
+		applets.add(app);
+		myApplet = app;
+	}
+
 	public Applet getApplet(String name){
 		throw new UnsupportedOperationException();
 	}
 
 	public Enumeration<Applet> getApplets(){
-		throw new UnsupportedOperationException();
+		return applet.elements();
 	}
 
 	public AudioClip getAudioClip(URL url){

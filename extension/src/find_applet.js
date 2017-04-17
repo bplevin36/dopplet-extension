@@ -13,6 +13,7 @@ let javaCode = elements[0].getAttribute('code');
 let javaName = elements[0].getAttribute('name');
 let javaHeight = elements[0].getAttribute('height');
 let javaWidth = elements[0].getAttribute('width');
+let appletChildren = elements[0].children;
 let canvas = document.createElement('canvas');
 canvas.setAttribute('data-code', javaCode.endsWith('.class')?javaCode.slice(0,-6):javaCode);
 canvas.id = 'appletReplacement';
@@ -24,6 +25,11 @@ if (javaHeight)
 	canvas.height = javaHeight;
 if (javaWidth)
 	canvas.width = javaWidth;
+if(appletChildren){
+  for(let i=0; i<appletChildren.length; i++){
+    canvas.appendChild(appletChildren[i]);
+  }
+}
 // create status box
 let statusBox = document.createElement('section');
 statusBox.style = "border: 1px solid lightgrey; margin-bottom: 10px";
