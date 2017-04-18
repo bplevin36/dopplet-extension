@@ -16,7 +16,8 @@ let javaWidth = elements[0].getAttribute('width');
 let appletChildren = elements[0].children;
 let canvas = document.createElement('canvas');
 canvas.setAttribute('data-code', javaCode.endsWith('.class')?javaCode.slice(0,-6):javaCode);
-canvas.id = 'appletReplacement';
+canvas.id = 'applet0';
+canvas.className = 'appletReplacement';
 canvas.style = "border:1px solid #000000;";
 canvas.tabindex = "1";
 if(javaName)

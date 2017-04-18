@@ -10,27 +10,36 @@ import java.util.Enumeration;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.HashMap;
 
 public class CanvasAppletContext implements AppletContext {
 
 	private static Vector<Applet> applets = null;
 
 	private Applet myApplet;
+	private HashMap<String, InputStream> streams;
 
 	public CanvasAppletContext(Applet app){
 		if(applets == null){
 			applets = new Vector<Applet>();
 		}
+		streams = new HashMap<String, InputStream>();
 		applets.add(app);
 		myApplet = app;
 	}
 
 	public Applet getApplet(String name){
-		throw new UnsupportedOperationException();
+		for(Enumeration<Applet> e = getApplets(); e.hasMoreElements;){
+			Applet next = e.nextElement();
+			if(next.getParameter("name").equals(name)){
+				return next;
+			}
+		}
+		return null;
 	}
 
 	public Enumeration<Applet> getApplets(){
-		return applet.elements();
+		return applets.elements();
 	}
 
 	public AudioClip getAudioClip(URL url){
@@ -40,23 +49,30 @@ public class CanvasAppletContext implements AppletContext {
 	public Image getImage(URL url){
 		throw new UnsupportedOperationException();
 	}
-
+	@Override
 	public InputStream getStream(String key){
-		throw new UnsupportedOperationException();
+		return streams.get(key);
 	}
+	@Override
 	public Iterator<String> getStreamKeys(){
-		throw new UnsupportedOperationException();
+		return streams.keySet().iterator();
 	}
+	@Override
 	public void setStream(String key, InputStream stream){
-		throw new UnsupportedOperationException();
+		if(stream != null){
+			streams.put(key, stream);
+		}else{
+			streams.remove(key);
+		}
 	}
-
+	@Override
 	public void showDocument(URL url){
-		throw new UnsupportedOperationException();
+		// ignored
 	}
+	@Override
 	public void showDocument(URL url, String target){
-		throw new UnsupportedOperationException();
+		// ignored
 	}
-
+	@Override
 	public native void showStatus(String status);
 }

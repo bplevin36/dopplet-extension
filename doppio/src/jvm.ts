@@ -753,7 +753,7 @@ class JVM {
       'java.vm.version': pkg.version,
       'java.vm.vendor': 'PLASMA@UMass',
       'java.awt.headless': (!are_in_browser()).toString(), // true if we're using the console frontend
-      'java.awt.graphicsenv': 'classes.awt.CanvasGraphicsEnvironment',
+      'java.awt.graphicsenv': 'CanvasGraphicsEnvironment',
       'awt.toolkit': 'CanvasToolkit',
       'jline.terminal': 'jline.UnsupportedTerminal', // we can't shell out to `stty`,
       'sun.arch.data.model': '32', // Identify as 32-bit, because that's how we act.

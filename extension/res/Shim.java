@@ -6,9 +6,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Panel;
+import java.awt.Frame;
 
 
-public class Shim extends Panel implements Runnable, AppletStub {
+public class Shim extends Frame implements Runnable, AppletStub {
 
 	String canvasId;
 	Applet applet;
@@ -17,11 +18,12 @@ public class Shim extends Panel implements Runnable, AppletStub {
 
 	public static void main(String[] args) {
 		//TODO programatically set canvasId param
-		Shim myShim = new Shim("appletReplacement");
+		Shim myShim = new Shim("applet0");
 		new Thread(myShim).start();
 	}
 
 	public Shim(String canvas){
+		// TODO make Frame constructor not die here
 		try{
 			canvasId = canvas;
 			documentBase = new URL(getDocumentBase0());
@@ -66,6 +68,7 @@ public class Shim extends Panel implements Runnable, AppletStub {
 				applet.setVisible(false);
 				add("Center", applet);
 
+				validate();
 				
 				applet.init();
 			}
@@ -83,7 +86,7 @@ public class Shim extends Panel implements Runnable, AppletStub {
 	public URL getCodeBase(){
 		return codeBase;
 	}
-	public native String getDocumentBase0();
+	private native String getDocumentBase0();
 	@Override
 	public URL getDocumentBase(){
 		return documentBase;

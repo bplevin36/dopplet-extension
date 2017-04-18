@@ -3,11 +3,10 @@ import java.applet.AudioClip;
 
 public class CanvasAudioClip implements AudioClip {
 
-	private String src;
+	private int clipIndex;
 
 	public CanvasAudioClip(URL url){
-		src = url.toString();
-		constructAudio(src);
+		clipIndex = constructAudio(url.toString());
 	}
 
 	public native void play();
