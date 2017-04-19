@@ -1,5 +1,4 @@
 
-
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Shape;
@@ -111,7 +110,15 @@ public class CanvasGraphics extends Graphics {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public native boolean drawImage(Image img, int x, int y, ImageObserver observer);
+	public boolean drawImage(Image img, int x, int y, ImageObserver observer){
+		if(img instanceof JSImage){// optimize for canvas, hell with polymorphism
+			return drawImage0(((JSImage)img).getId(), x, y);
+		}else{
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private native boolean drawImage0(String id, int x, int y);
 	@Override
 	public boolean drawImage(Image img, int x, int y, int width, int height,
 		Color bgcolor, ImageObserver observer){

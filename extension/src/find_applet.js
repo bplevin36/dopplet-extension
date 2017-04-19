@@ -38,11 +38,17 @@ statusBox.innerHTML = `
 <h4 style="margin: 5px 5px;">Status:</h4>
 <p class="appletStatus" style="margin: 5px 15px 15px; color: grey; font: 15px arial, sans-serif;">None so far...</p>
 `
+// create invisible canvas space
+let canvasArea = document.createElement('div');
+canvasArea.style = "display:none;";
+canvasArea.id = "imageBuffers";
+
 //swap in canvas and fill with test
 // TODO scrape out params element under applet
 let parent = toReplace.parentNode;
 parent.replaceChild(canvas, toReplace);
 parent.insertBefore(statusBox, canvas);
+parent.appendChild(canvasArea);
 
 // add browserfs
 let browserfsjs = document.createElement('script');

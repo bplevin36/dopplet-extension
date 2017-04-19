@@ -1,4 +1,4 @@
-
+var loader;
 function initString(cl, str) {
   var carr = initCarr(cl, str);
   var strCons = (cl.getResolvedClass('Ljava/lang/String;')).getConstructor(null);
@@ -8,6 +8,9 @@ function initString(cl, str) {
 }
 
 function initCarr(cl, str) {
+  if(!loader){
+    loader = cl;
+  }
   var arrClsCons = (cl.getInitializedClass(null, '[C')).getConstructor(null),
     carr = new arrClsCons(null, str.length),
     carrArray = carr.array;
@@ -24,6 +27,9 @@ registerNatives({
 
     },
     'getDocumentBase0()Ljava/lang/String;': function(thread, javaThis) {
+      if(!loader){
+        loader = thread.getBsCl();
+      }
     	return initString(thread.getBsCl(), document.URL);
     },
     'getParameter(Ljava/lang/String;)Ljava/lang/String;': function(thread, javaThis, paramName){
@@ -42,13 +48,15 @@ registerNatives({
       }
       return null;
     },
-    'testCall()I': function(thread, javaThis){
-      let method = javaThis['Shim/getDocumentBase()Ljava/net/URL;'];
-
-      thread.setStatus(6);
-      console.log(method(thread, [], function(){
-        thread.asyncReturn(5);
-      }));
+    'attachListener(Ljava/lang/Thread;)V': function(thread, javaThis, arg0){
+      let button = document.getElementById('mouseListener');
+      button.addEventListener('click', function(){
+        arg0['start()V'](thread, [], function(e,v){
+          if(e){
+            console.log(e);
+          }
+        });
+      });
     }
   }
 });

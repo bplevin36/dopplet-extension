@@ -57,11 +57,13 @@ public class CanvasToolkit extends Toolkit implements ComponentFactory, Keyboard
     /* Lightweight implementation of Canvas and Panel */
 
     public CanvasPeer createCanvas(Canvas target) {
+        System.out.println("Canvas requested");
         return (CanvasPeer)createComponent(target);
     }
 
     public PanelPeer createPanel(Panel target) {
-        return (PanelPeer)createComponent(target);
+        System.out.println("Panel requested");
+        return new CanvasPanelPeer();
     }
 
     /*

@@ -48,8 +48,17 @@ registerNatives({
       */
     },
 
-    'drawImage(Ljava/awt/Image;IILjava/awt/image/ImageObserver;)Z': function(thread, javaThis, arg0, arg1, arg2, arg3) {
-      let raster = arg0["java/awt/BufferedImage/raster"];
+    'drawImage0(Ljava/lang/String;II)Z': function(thread, javaThis, id, x, y) {
+      let ctx = getContext(thread, javaThis);
+      if(ctx){
+        let img = document.getElementById(id.toString());
+        try{
+          ctx.drawImage(img, x, y);
+        }catch(exception){
+          return false;
+        }
+        return true;
+      }
     },
 
     'drawLine(IIII)V': function(thread, javaThis, arg0, arg1, arg2, arg3) {

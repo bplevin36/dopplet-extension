@@ -20,11 +20,12 @@ public class Shim extends Panel implements Runnable, AppletStub {
 	public static void main(String[] args) {
 		//TODO programatically set canvasId param
 		Shim myShim = new Shim("applet0");
+		myShim.addNotify();
 		new Thread(myShim).start();
 	}
 
 	public Shim(String canvas){
-		// TODO make Frame constructor not die here
+		
 		try{
 			canvasId = canvas;
 			documentBase = new URL(getDocumentBase0());
@@ -47,9 +48,6 @@ public class Shim extends Panel implements Runnable, AppletStub {
 		System.out.println("Document: " + getDocumentBase());
 		System.out.println("Codebase: "+ getCodeBase());
 		System.out.println("Code: "+ getParameter("data-code"));
-		System.out.println("D? "+getParameter("d"));
-		System.out.println("Headless? "+GraphicsEnvironment.isHeadless());
-		System.out.println("AT? "+System.getProperty("javax.accessibility.assistive_technologies"));
 
 		ClassLoader cl = this.getClass().getClassLoader();
 		Class<? extends Applet> codeClass=null;
@@ -69,17 +67,16 @@ public class Shim extends Panel implements Runnable, AppletStub {
 				applet.setStub(this);
 				applet.setVisible(false);
 				add("Center", applet);
-
+				// optionally show status here
 				validate();
+				applet.resize(getWidth(), getHeight());
 				
 				applet.init();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		System.out.println(testCall());
+		}	
 	}
-	private native int testCall();
 	@Override
 	public native void appletResize(int width, int height);
 	@Override
@@ -101,4 +98,18 @@ public class Shim extends Panel implements Runnable, AppletStub {
 	public boolean isActive(){
 		return false;
 	}
+	public int getWidth() {
+        String w = getParameter("width");
+        if (w != null) {
+            return Integer.valueOf(w).intValue();
+        }
+        return 0;
+    }
+    public int getHeight() {
+        String h = getParameter("height");
+        if (h != null) {
+            return Integer.valueOf(h).intValue();
+        }
+        return 0;
+    }
 }
