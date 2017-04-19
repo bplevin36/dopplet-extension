@@ -9,10 +9,11 @@ import java.awt.Panel;
 import java.awt.Frame;
 
 
-public class Shim extends Frame implements Runnable, AppletStub {
+public class Shim extends Panel implements Runnable, AppletStub {
 
 	String canvasId;
 	Applet applet;
+	AppletContext context;
 	URL codeBase;
 	URL documentBase;
 
@@ -64,6 +65,7 @@ public class Shim extends Frame implements Runnable, AppletStub {
 		try{
 			applet = codeClass.newInstance();
 			if(applet != null){
+				context = new CanvasAppletContext(applet);
 				applet.setStub(this);
 				applet.setVisible(false);
 				add("Center", applet);
@@ -75,12 +77,14 @@ public class Shim extends Frame implements Runnable, AppletStub {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println(testCall());
 	}
+	private native int testCall();
 	@Override
 	public native void appletResize(int width, int height);
 	@Override
 	public AppletContext getAppletContext(){
-		throw new UnsupportedOperationException();
+		return context;
 	}
 	@Override
 	public URL getCodeBase(){

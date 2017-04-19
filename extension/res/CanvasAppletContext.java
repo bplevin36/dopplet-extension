@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class CanvasAppletContext implements AppletContext {
 
@@ -29,7 +30,7 @@ public class CanvasAppletContext implements AppletContext {
 	}
 
 	public Applet getApplet(String name){
-		for(Enumeration<Applet> e = getApplets(); e.hasMoreElements;){
+		for(Enumeration<Applet> e = getApplets(); e.hasMoreElements();){
 			Applet next = e.nextElement();
 			if(next.getParameter("name").equals(name)){
 				return next;

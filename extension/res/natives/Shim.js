@@ -41,6 +41,14 @@ registerNatives({
         }
       }
       return null;
+    },
+    'testCall()I': function(thread, javaThis){
+      let method = javaThis['Shim/getDocumentBase()Ljava/net/URL;'];
+
+      thread.setStatus(6);
+      console.log(method(thread, [], function(){
+        thread.asyncReturn(5);
+      }));
     }
   }
 });
