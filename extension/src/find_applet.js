@@ -43,12 +43,17 @@ let canvasArea = document.createElement('div');
 canvasArea.style = "display:none;";
 canvasArea.id = "imageBuffers";
 
+//  mouse listener test
+let mouseListener = document.createElement('button');
+mouseListener.id = "mouseListener";
+mouseListener.innerText = "Mouse Listener";
 //swap in canvas and fill with test
 // TODO scrape out params element under applet
 let parent = toReplace.parentNode;
 parent.replaceChild(canvas, toReplace);
 parent.insertBefore(statusBox, canvas);
 parent.appendChild(canvasArea);
+parent.appendChild(mouseListener);
 
 // add browserfs
 let browserfsjs = document.createElement('script');

@@ -23,7 +23,7 @@ function initCarr(cl, str) {
 // This entire object is exported. Feel free to define private helper functions above it.
 registerNatives({
   'Shim': {
-    'appletResize(II)V': function(thread, javaThis, width, height){
+    'appletResize0(II)V': function(thread, javaThis, width, height){
 
     },
     'getDocumentBase0()Ljava/lang/String;': function(thread, javaThis) {
@@ -48,16 +48,19 @@ registerNatives({
       }
       return null;
     },
-    'attachListener(Ljava/lang/Thread;)V': function(thread, javaThis, arg0){
+    'attachListener()V': function(thread, javaThis){
       let button = document.getElementById('mouseListener');
+      let listener = javaThis['Shim/listener'];
+      
       button.addEventListener('click', function(){
-        arg0['start()V'](thread, [], function(e,v){
+        listener['run()V'](listener.$thread, [], function(e,v){
           if(e){
             console.log(e);
           }
         });
       });
     }
+    
   }
 });
 
