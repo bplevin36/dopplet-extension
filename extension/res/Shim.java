@@ -4,10 +4,16 @@ import java.lang.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.MalformedURLException;
+
 import java.awt.GraphicsEnvironment;
 import java.awt.Panel;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Dimension;
+
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+
 
 
 public class Shim extends Panel implements Runnable, AppletStub {
@@ -49,9 +55,6 @@ public class Shim extends Panel implements Runnable, AppletStub {
 	}
 
 	public void run() {
-		System.out.println("Document: " + getDocumentBase());
-		System.out.println("Codebase: "+ getCodeBase());
-		System.out.println("Code: "+ getParameter("data-code"));
 
 		ClassLoader cl = this.getClass().getClassLoader();
 		Class<? extends Applet> codeClass=null;
@@ -78,7 +81,16 @@ public class Shim extends Panel implements Runnable, AppletStub {
 				applet.init();
 				this.validate();
 				status = APPLET_INIT;
+				/*EventQueue eq = Toolkit.getEventQueue();
+				System.out.println("Toolkit: "+eq.toString());
+				*/
 
+				// TODO: figure out this stuff with AppContext that creates EventQueue and so on
+				this.setVisible(true);
+				repaint();
+
+				System.out.println(java.awt.CanvasEventQueue.getEventQueueString());
+				
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -90,6 +102,18 @@ public class Shim extends Panel implements Runnable, AppletStub {
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public void update(Graphics g){
+		super.update(g);
+		paint(g);
+		System.out.println("Top level update");
+	}
+	@Override
+	public void paint(Graphics g){
+		super.paint(g);
+		System.out.println("Top level paint");
+	}
+
 	private native void attachListener();
 	@Override
 	public void appletResize(int width, int height){

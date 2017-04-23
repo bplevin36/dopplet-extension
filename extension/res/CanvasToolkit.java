@@ -335,6 +335,7 @@ public class CanvasToolkit extends Toolkit implements ComponentFactory, Keyboard
      * Event Queue
      */
     public EventQueue getSystemEventQueueImpl() {
+        System.out.println("No event queue here");
     	throw new HeadlessException();
     }
 
