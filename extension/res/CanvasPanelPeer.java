@@ -7,7 +7,7 @@ import sun.java2d.pipe.Region;
 import sun.awt.CausedFocusEvent;
 
 public class CanvasPanelPeer implements PanelPeer {
-	    public boolean isObscured() {
+	public boolean isObscured() {
         return false;
     }
 
@@ -41,6 +41,7 @@ public class CanvasPanelPeer implements PanelPeer {
     }
 
     public void repaint(long tm, int x, int y, int width, int height) {
+        System.out.println("Repaint called on peer");
     }
 
     public void print(Graphics g) {

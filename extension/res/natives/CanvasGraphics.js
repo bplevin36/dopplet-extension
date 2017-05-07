@@ -162,6 +162,7 @@ registerNatives({
       let canvas = document.getElementById(id);
       if(canvas){
         let ctx = canvas.getContext('2d');
+        ctx.lineWidth = 1;
         window.drawingContexts = {};
         window.drawingContexts[id] = ctx;
         window.drawingClips = {};

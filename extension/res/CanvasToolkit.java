@@ -15,11 +15,13 @@ import java.util.Properties;
 import sun.awt.ComponentFactory;
 import sun.awt.GlobalCursorManager;
 import sun.awt.KeyboardFocusManagerPeerProvider;
+import sun.awt.NullComponentPeer;
 
 public class CanvasToolkit extends Toolkit implements ComponentFactory, KeyboardFocusManagerPeerProvider{
 	
     private Toolkit tk;
     private ComponentFactory componentFactory;
+    private EventQueue eventQueue;
 
     private static final KeyboardFocusManagerPeer kfmPeer = new KeyboardFocusManagerPeer() {
         public void setCurrentFocusedWindow(Window win) {}
@@ -34,10 +36,14 @@ public class CanvasToolkit extends Toolkit implements ComponentFactory, Keyboard
         if (tk instanceof ComponentFactory) {
             componentFactory = (ComponentFactory)tk;
         }
+        eventQueue = new JSEventQueue();
+        eventQueue.push(new JSEventQueue());
 	}
 
 	public CanvasToolkit(){
-		tk = this;
+		this.tk = this;
+        eventQueue = new JSEventQueue();
+        eventQueue.push(new JSEventQueue());
 	}
 
 
@@ -62,6 +68,10 @@ public class CanvasToolkit extends Toolkit implements ComponentFactory, Keyboard
     }
 
     public PanelPeer createPanel(Panel target) {
+        if(target instanceof java.applet.Applet){
+            System.out.println("Applet requested");
+            return new NullComponentPeer();
+        }
         System.out.println("Panel requested");
         return new CanvasPanelPeer();
     }
@@ -335,8 +345,11 @@ public class CanvasToolkit extends Toolkit implements ComponentFactory, Keyboard
      * Event Queue
      */
     public EventQueue getSystemEventQueueImpl() {
-        System.out.println("No event queue here");
-    	throw new HeadlessException();
+        if(eventQueue != null){
+            System.out.println("Fetching event queue: "+eventQueue.toString());
+            return eventQueue;
+        }
+        throw new NullPointerException("Event Queue not initialized!");
     }
 
     /*

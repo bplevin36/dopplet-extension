@@ -15,7 +15,6 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 
-
 public class Shim extends Panel implements Runnable, AppletStub {
 	String canvasId;
 	Applet applet;
@@ -29,11 +28,11 @@ public class Shim extends Panel implements Runnable, AppletStub {
 	public static void main(String[] args) {
 		//TODO programatically set canvasId param
 		Shim myShim = new Shim("applet0");
-		myShim.addNotify();
 		new Thread(myShim).start();
 	}
 
 	public Shim(String canvas){
+		super();
 		currentAppletSize = new Dimension(10, 10);
 		listener = new ListenerTester(this);
 		try{
@@ -52,6 +51,7 @@ public class Shim extends Panel implements Runnable, AppletStub {
 		}catch(MalformedURLException e){
 			e.printStackTrace();
 		}
+		setVisible(true);
 	}
 
 	public void run() {
@@ -63,10 +63,7 @@ public class Shim extends Panel implements Runnable, AppletStub {
 		}catch(ClassNotFoundException e){
 			e.printStackTrace();
 		}
-		Method[] methods = codeClass.getDeclaredMethods();
-		for(int i=0; i < methods.length; i++){
-			System.out.println(methods[i].toString());
-		}
+
 		try{
 			applet = codeClass.newInstance();
 			if(applet != null){
@@ -77,6 +74,7 @@ public class Shim extends Panel implements Runnable, AppletStub {
 				// optionally show status here
 				currentAppletSize.width = getWidth();
 				currentAppletSize.height = getHeight();
+				this.setSize(currentAppletSize);
 				applet.resize(currentAppletSize.width, currentAppletSize.height);
 				applet.init();
 				this.validate();
@@ -87,10 +85,10 @@ public class Shim extends Panel implements Runnable, AppletStub {
 
 				// TODO: figure out this stuff with AppContext that creates EventQueue and so on
 				this.setVisible(true);
-				repaint();
-
-				System.out.println(java.awt.CanvasEventQueue.getEventQueueString());
-				
+				//this.repaint();
+				PaintEvent e = new PaintEvent(this, PaintEvent.UPDATE,
+                                              new Rectangle(x, y, width, height));
+                CanvasToolkit.getSystemEventQueueImpl().postEvent(e);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -103,10 +101,22 @@ public class Shim extends Panel implements Runnable, AppletStub {
 		}
 	}
 	@Override
+	public void addNotify(){
+		super.addNotify();
+		System.out.println("shim addNotified");
+	}
+	@Override
+	public void show(){
+		if(getPeer() == null){
+			addNotify();
+		}
+		super.show();
+	}
+	@Override
 	public void update(Graphics g){
 		super.update(g);
-		paint(g);
 		System.out.println("Top level update");
+		paint(g);
 	}
 	@Override
 	public void paint(Graphics g){
