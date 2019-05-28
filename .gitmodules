@@ -1,3 +1,6 @@
 [submodule "BrowserFS"]
 	path = BrowserFS
 	url = git@github.com:jvilk/BrowserFS.git
+[submodule "doppio"]
+	path = doppio
+	url = git@github.com:plasma-umass/doppio.git
